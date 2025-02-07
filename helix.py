@@ -341,3 +341,12 @@ class HelixInterpreter:
             raise ValueError(
                 "You didn't provide enough arguments for this opcode. Which opcode? I don't know. Figure it out, "
                 "I guess.")
+
+
+if __name__ == "__main__":
+    source = sys.argv[1]
+    with open(source, "r") as f:
+        code = source.read()
+        code = "".join(code.split())
+        interpreter = HelixInterpreter()
+        interpreter.run(code)
