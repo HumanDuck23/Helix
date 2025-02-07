@@ -176,11 +176,11 @@ class HelixInterpreter:
             sys.exit(0)
 
         match current_codon:
-            case CODON.STOP:
+            case CODON.STOP.value:
                 print("Encountered a STOP codon. Halting execution...")
                 sys.exit(1)
 
-            case CODON.MUT:
+            case CODON.MUT.value:
                 [orig, offset, new_codon] = self.get_codon_args(2)
                 offset_number = codon_to_number(offset)
                 try:
@@ -188,7 +188,7 @@ class HelixInterpreter:
                 except IndexError:
                     raise ValueError("You tried mutating a codon that doesn't exist! Silly you...")
 
-            case CODON.DEL:
+            case CODON.DEL.value:
                 [orig, offset] = self.get_codon_args(1)
                 offset_number = codon_to_number(offset)
                 try:
@@ -196,7 +196,7 @@ class HelixInterpreter:
                 except IndexError:
                     raise ValueError("You tried deleting a codon that doesn't exist! But why...?")
 
-            case CODON.INS:
+            case CODON.INS.value:
                 [orig, offset, new_codon] = self.get_codon_args(2)
                 offset_number = codon_to_number(offset)
                 try:
@@ -205,7 +205,7 @@ class HelixInterpreter:
                     raise ValueError(
                         "You tried inserting a codon to a place that doesn't exist. Who knows where it is now...")
 
-            case CODON.DUP:
+            case CODON.DUP.value:
                 [orig, start_offset, length] = self.get_codon_args(2)
                 offset_number = codon_to_number(start_offset)
                 length_number = codon_to_number(length)
@@ -223,7 +223,7 @@ class HelixInterpreter:
                 except Exception:
                     raise ValueError("You tried inserting codons into somewhere nonexistent. Welp.")
 
-            case CODON.TRP:
+            case CODON.TRP.value:
                 [orig, source_offset, length, dest_offset] = self.get_codon_args(3)
                 offset_number = codon_to_number(source_offset)
                 length_number = codon_to_number(length)
@@ -244,7 +244,7 @@ class HelixInterpreter:
                         "You tried moving the cut codons to somewhere out of this DNA strand. Quite a silly thing to "
                         "do, if you ask me...")
 
-            case CODON.REV:
+            case CODON.REV.value:
                 [orig, start_offset, length] = self.get_codon_args(2)
                 offset_number = codon_to_number(start_offset)
                 length_number = codon_to_number(length)
@@ -256,11 +256,11 @@ class HelixInterpreter:
                     raise ValueError(
                         "You messed something up reversing. Maybe you drove into something. Check your offsets.")
 
-            case CODON.LDI:
+            case CODON.LDI.value:
                 [_, num] = self.get_codon_args(1)  # we don't always need the original IP from here on in
                 self.acc_register = num  # we don't parse this yet as it will be interpreted based on context
 
-            case CODON.LD:
+            case CODON.LD.value:
                 [orig, offset] = self.get_codon_args(1)
                 offset_number = codon_to_number(offset, True)
                 try:
@@ -270,7 +270,7 @@ class HelixInterpreter:
                         "You tried loading a codon that doesn't exist into the ACC register. Should I just make up a "
                         "number??")
 
-            case CODON.ST:
+            case CODON.ST.value:
                 [orig, offset] = self.get_codon_args(1)
                 offset_number = codon_to_number(offset, True)
 
@@ -282,7 +282,7 @@ class HelixInterpreter:
                 except IndexError:
                     raise ValueError("You tried storing the ACC register to a codon that doesn't exist. Huh.")
 
-            case CODON.ADDI:
+            case CODON.ADDI.value:
                 [orig, num_codon] = self.get_codon_args(1)
                 num = codon_to_number(num_codon, True)
 
@@ -293,7 +293,7 @@ class HelixInterpreter:
                 acc_num += num
                 self.acc_register = number_to_codon(acc_num, True)
 
-            case CODON.CMP:
+            case CODON.CMP.value:
                 [orig, comp] = self.get_codon_args(1)
 
                 if self.acc_register == "":
@@ -301,7 +301,7 @@ class HelixInterpreter:
 
                 self.flag_register = 1 if self.acc_register == comp else 0
 
-            case CODON.SETF:
+            case CODON.SETF.value:
                 [orig, flag] = self.get_codon_args(1)
 
                 if flag[0] in ["A", "C"]:
@@ -309,14 +309,14 @@ class HelixInterpreter:
                 else:
                     self.flag_register = 0
 
-            case CODON.OUT:
+            case CODON.OUT.value:
                 if self.acc_register == "":
                     raise ValueError("You tried outputting the ACC register. Since it's not set, I don't see what "
                                      "you're trying to accomplish. Silly goose.")
 
                 print(character_decode(codon_to_number(self.acc_register)), end="")
 
-            case CODON.IN:
+            case CODON.IN.value:
                 char_in = input()
                 char_num = character_encode(char_in)
                 self.acc_register = number_to_codon(char_num)
