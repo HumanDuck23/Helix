@@ -346,7 +346,7 @@ class HelixInterpreter:
 if __name__ == "__main__":
     source = sys.argv[1]
     with open(source, "r") as f:
-        code = source.read()
+        code = f.read()
         code = "".join(code.split())
         interpreter = HelixInterpreter()
         interpreter.run(code)
