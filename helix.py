@@ -272,7 +272,7 @@ class HelixInterpreter:
                         "Maybe before loading the result of a comparison you should, you know, compare something? "
                         "Just an idea, who am I to say.")
 
-                self.acc_register = self.flag_register
+                self.acc_register = number_to_codon(self.flag_register)
 
             case CODON.LD.value:
                 [orig, offset] = self.get_codon_args(1)
